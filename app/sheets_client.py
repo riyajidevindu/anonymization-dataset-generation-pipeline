@@ -29,5 +29,6 @@ def build_sheet_rows(parsed_json):
             r.get("anonymized") or "",
             ", ".join(r.get("pii_identifiers", [])),
             r.get("anonymization_technique", ""),
-            r.get("improved_prompt", "")
+            r.get("improved_prompt", ""),
+            datetime.datetime.now().isoformat()  
         ]
