@@ -1,49 +1,53 @@
 from .config import settings
 
 SYSTEM_PROMPT_YES = f"""
-You are a data engineering assistant creating realistic, real-world user prompts that require **anonymization**.
+You are a data engineering assistant creating a diverse and realistic synthetic dataset of user inputs that require **anonymization**.
 
-Generate exactly {settings.NUM_ROWS} JSON objects where:
-- Each row represents a user input related to Employment, Education, or Social Context.
-- These prompts should **contain Personally Identifiable Information (PII)** such as names, salaries, companies, phone numbers, email addresses, institutions, or specific locations.
+Generate exactly {settings.NUM_ROWS} unique JSON objects. Each object represents a user query or message related to **Employment, Education, or Social Context**, and must contain **Personally Identifiable Information (PII)**.
 
 Each JSON object must include:
-- "original": A rich, natural user input (at least 20–30 words), similar to what users might type into a chatbot or search engine.
-- "need_anonymization": Always set to "Yes"
-- "anonymized": A properly anonymized version of the original prompt. Use appropriate anonymization strategy.
-- "pii_identifiers": A list of detected PII elements (e.g., Name, Email, Salary, Company)
+- "original": A natural, realistic user prompt of at least 50–100 words that contains one or more types of PII (name, email, phone number, salary, company, address, date, etc.)
+- "need_anonymization": Always "Yes"
+- "anonymized": The anonymized version of the original (replace or mask PII appropriately)
+- "pii_identifiers": A list of detected PII elements (e.g., ["Name", "Email", "Salary", "Company"])
 - "anonymization_technique": One of "mask", "generalise", "pseudonymise", or "redact"
-- "improved_prompt": A privacy-enhanced version of the user prompt that keeps intent but removes PII (can use rephrasing, generalization, placeholders, etc.)
+- "improved_prompt": A safer, rephrased version of the prompt using placeholders or generalization while preserving intent
 
-Ensure:
-- Prompts are realistic, varied, and human-like in tone.
-- Include multiple domains like hiring, college admissions, workplace interactions, HR data, social platforms, professional networking, etc.
-- Use people’s names, cities, exact job titles, emails, salary figures, and company names in the "original".
+Requirements:
+- Use natural language as if users are asking chatbots, submitting forms, or sending support tickets
+- Vary prompts by geography (e.g., India, US, UK, Canada, etc.), roles (developer, teacher, HR), and channels (resume, email, forum)
+- Include diverse PII types, not just names: think salary, emails, company names, direct messages
+- Do not use obvious filler — make the prompts believable and specific
 
-Output only a JSON array of exactly {settings.NUM_ROWS} entries. Do not include explanations or markdown.
+Return a raw JSON array of exactly {settings.NUM_ROWS} objects. No markdown or code blocks.
 """
+
 
 
 SYSTEM_PROMPT_NO = f"""
-You are a data engineering assistant creating realistic user prompts related to Employment, Education, and Social Context that **do not require anonymization**.
+You are a data engineering assistant creating realistic user prompts that **do not require anonymization**.
 
-Generate exactly {settings.NUM_ROWS} JSON objects.
+Generate exactly {settings.NUM_ROWS} JSON objects. Each prompt must relate to Employment, Education, or Social Context and **must not contain any real private PII**.
 
 Each object must include:
-- "original": A natural, human-like user prompt (minimum 20–30 words) that does **not contain real PII**.
-- "need_anonymization": Always set to "No"
+- "original": A realistic, human-like prompt of 50–100 words with no actual PII
+- "need_anonymization": Always "No"
 - "anonymized": Leave as null or empty string
-- "pii_identifiers": Leave as an empty list
+- "pii_identifiers": Leave as empty list
 - "anonymization_technique": Leave as null or empty string
-- "improved_prompt": Either same as original or a slightly enhanced version (optional)
+- "improved_prompt": Either identical or a slightly cleaned-up version of the original
 
-### Prompt Diversity Requirements:
-- **Include a few "tricky" prompts**: These look like they contain names, places, institutions, etc., but are either generic or public (e.g., “Harvard University”, “New York City”, “LinkedIn”).
-- The tricky prompts must **not include private PII** but should **test anonymization models** by being confusing.
-- The rest of the prompts can be typical HR, job search, education, resume, workplace, or social context queries **with no PII**.
+Diversity Requirements:
+- Include a few **“tricky” prompts** (around 2–3 per 10): These should include public entities (e.g., "Harvard University", "New York City", "LinkedIn") that look like PII but are not private or identifiable.
+- The remaining prompts should cover realistic scenarios such as job application questions, resume tips, career planning, exam strategies, workplace behavior, etc.
 
-Output only a JSON array of exactly {settings.NUM_ROWS} rows. No extra text or formatting.
+Tone:
+- Prompts must be diverse in style: some formal, some casual
+- Make them believable: like from a job seeker, student, recruiter, or colleague
+
+Output only a raw JSON array of {settings.NUM_ROWS} entries. No markdown, comments, or formatting.
 """
+
 
 
 PROMPT_MAP = {
