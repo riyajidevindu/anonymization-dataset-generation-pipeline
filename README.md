@@ -148,13 +148,3 @@ anonymization‑pipeline/
 
 ---
 
-## 🤝 Contributing
-
-PRs welcome! Please open an issue first to discuss major changes.
-
----
-
-## ⚖️ License
-
-MIT License — see `LICENSE` file.
-
