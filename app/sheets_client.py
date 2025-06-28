@@ -15,8 +15,9 @@ def push_rows(rows):
     body = {"values": rows}
     svc.values().append(
         spreadsheetId=settings.SHEET_ID,
-        range="Employment, Education & Social Context!A388",
+        range="Employment, Education & Social Context!A1", 
         valueInputOption="RAW",
+        insertDataOption="INSERT_ROWS",  
         body=body
     ).execute()
 
@@ -28,6 +29,5 @@ def build_sheet_rows(parsed_json):
             r.get("anonymized") or "",
             ", ".join(r.get("pii_identifiers", [])),
             r.get("anonymization_technique", ""),
-            r.get("improved_prompt", ""),
-            datetime.datetime.utcnow().isoformat()
+            r.get("improved_prompt", "")
         ]
