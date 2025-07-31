@@ -11,6 +11,7 @@ class Settings:
     SERVICE_ACCOUNT_FILE: str = os.getenv("SERVICE_ACCOUNT_FILE")
     NUM_ROWS: int = int(os.getenv("NUM_ROWS", 10))
     SHEET_TAB_NAME: str = os.getenv("SHEET_TAB_NAME")
+    SHEET_TABS: list = os.getenv("SHEET_TABS", "Sheet1,Sheet2,Sheet3,Sheet4").split(",")
     WAIT_SECONDS: int = int(os.getenv("WAIT_SECONDS", 60))  
 
 settings = Settings()

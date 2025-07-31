@@ -57,3 +57,38 @@ def build_sheet_rows(parsed_json):
             r.get("improved_prompt", ""),
             datetime.datetime.utcnow().isoformat()
         ]
+
+def get_all_rows(tab_name):
+    svc = _service().spreadsheets()
+    request = svc.values().get(
+        spreadsheetId=settings.SHEET_ID,
+        range=f"{tab_name}"
+    )
+    response = _execute_with_retry(request)
+    return response.get("values", [])
+
+def update_rows(tab_name, range_name, values):
+    svc = _service().spreadsheets()
+    body = {"values": values}
+    request = svc.values().update(
+        spreadsheetId=settings.SHEET_ID,
+        range=f"{tab_name}!{range_name}",
+        valueInputOption="RAW",
+        body=body
+    )
+    _execute_with_retry(request)
+
+def batch_update_rows(tab_name, data):
+    svc = _service().spreadsheets()
+    body = {
+        "valueInputOption": "RAW",
+        "data": [
+            {"range": f"{tab_name}!{d['range']}", "values": d['values']}
+            for d in data
+        ]
+    }
+    request = svc.values().batchUpdate(
+        spreadsheetId=settings.SHEET_ID,
+        body=body
+    )
+    _execute_with_retry(request)
